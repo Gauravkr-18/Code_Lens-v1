@@ -1,0 +1,52 @@
+.code-editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #1e1e1e;
+  border-right: 1px solid #3e3e42;
+  overflow: hidden;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: #252526;
+  border-bottom: 1px solid #3e3e42;
+  height: 40px;
+}
+
+.editor-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #cccccc;
+}
+
+.editor-language {
+  font-size: 12px;
+  color: #858585;
+  text-transform: uppercase;
+  background: #3c3c3c;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+
+.editor-textarea {
+  flex: 1;
+  width: 100%;
+  padding: 16px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border: none;
+  outline: none;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: none;
+  overflow: auto;
+}
+
+.editor-textarea::placeholder {
+  color: #6a6a6a;
+}

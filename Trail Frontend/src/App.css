@@ -1,0 +1,15 @@
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
