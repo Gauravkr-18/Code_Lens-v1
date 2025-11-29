@@ -1,0 +1,535 @@
+
+      const divider = document.getElementById("dragDivider");
+      const codeViewer = document.querySelector(".code-viewer");
+      const animationBox = document.querySelector(".animation-box");
+
+      let isDragging = false;
+
+      divider.addEventListener("mousedown", () => {
+        isDragging = true;
+        document.body.style.cursor = "ew-resize";
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        const container = document.getElementById("leftPane");
+        const rect = container.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left;
+        const totalWidth = rect.width;
+        const flexRatio = offsetX / totalWidth;
+
+        codeViewer.style.flex = flexRatio;
+        animationBox.style.flex = 1 - flexRatio;
+      });
+
+      document.addEventListener("mouseup", () => {
+        isDragging = false;
+        document.body.style.cursor = "default";
+      });
+
+      let selectedLanguage = "";
+
+      function selectLanguage(btn, lang) {
+        document
+          .querySelectorAll(".language-buttons button")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedLanguage = lang;
+      }
+
+      function syntaxHighlight(code) {
+        if (!code) return "";
+        code = code
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+        return code
+          .replace(/(".*?"|'.*?')/g, '<span style="color:#ce9178">$1</span>')
+          .replace(
+            /\b(function|if|else|for|while|do|switch|case|break|continue|return|let|var|const|class|try|catch|finally|throw|new|this|super|extends|import|export|default|from|as|with|async|await|def|elif|except|lambda|pass|yield|print|input|int|float|str|bool|char|void|static|public|private|protected|enum|struct|typedef|include|using|namespace)\b/g,
+            '<span style="color:#569cd6">$1</span>'
+          )
+          .replace(
+            /\b(true|false|null|undefined|NaN|Infinity)\b/g,
+            '<span style="color:#b5cea8">$1</span>'
+          )
+          .replace(
+            /\b(\d+(\.\d+)?)\b/g,
+            '<span style="color:#b5cea8">$1</span>'
+          )
+          .replace(/([\(\)\[\]\{\}])/g, '<span style="color:#d4d4d4">$1</span>')
+          .replace(
+            /\b(\w+)(?=\s*\()/g,
+            '<span style="color:#dcdcaa">$1</span>'
+          );
+      }
+
+      function detectLanguage(code) {
+        const scores = {
+          js: 0,
+          py: 0,
+          c: 0,
+          cpp: 0,
+          java: 0,
+        };
+
+        const patterns = {
+          js: [/(\bfunction\b|\bconsole\.log\b|\blet\b|\bconst\b|\=>)/],
+          py: [/(\bdef\b|\bprint\b|\bimport\b|\bself\b|:\s*\n?)/],
+          c: [
+            /#include\s*<stdio\.h>/,
+            /\bscanf\s*\(/,
+            /\bprintf\s*\(/,
+            /\bmalloc\s*\(/,
+            /\btypedef\s+struct\b/,
+            /\bint\s+main\s*\(\s*\)/,
+          ],
+          cpp: [
+            /#include\s*<iostream>/,
+            /\bstd::\w+/,
+            /\bcin\b|\bcout\b/,
+            /\busing\s+namespace\s+std\b/,
+          ],
+          java: [
+            /\bpublic\s+class\b/,
+            /\bSystem\.out\.println\b/,
+            /\bstatic\s+void\s+main\b/,
+            /\bimport\s+java\.\w+/,
+          ],
+        };
+
+        for (let lang in patterns) {
+          for (let regex of patterns[lang]) {
+            if (regex.test(code)) scores[lang]++;
+          }
+        }
+
+        // Prioritize C over JS if tied
+        if (scores.c === scores.js && scores.c > 0) return "c";
+
+        return Object.entries(scores).reduce((a, b) =>
+          b[1] > a[1] ? b : a
+        )[0];
+      }
+
+      function submitCode() {
+        const code = document.getElementById("codeInput").value.trim();
+        const output = document.getElementById("codeOutput");
+        const stepDisplay = document.getElementById("stepDisplay");
+
+        // Reset speed and zoom sliders to 1x
+        document.getElementById("speed").value = 1;
+        document.getElementById("zoom").value = 1;
+
+        // Detect & activate language
+        const detectedLang = detectLanguage(code);
+        selectedLanguage = detectedLang;
+
+        // Deactivate all buttons
+        document
+          .querySelectorAll(".language-buttons button")
+          .forEach((btn) => btn.classList.remove("active"));
+
+        // Activate detected one
+        document.querySelectorAll(".language-buttons button").forEach((btn) => {
+          if (btn.textContent.toLowerCase() === detectedLang) {
+            btn.classList.add("active");
+          }
+        });
+
+        // Syntax highlight + show
+        output.innerHTML = code.split('\n').map((line, idx) => `<span class='code-line'><span class='line-number'>${idx+1}</span> ${line}</span>`).join('');
+
+        // Show detected language in animation box
+        if (selectedLanguage === 'c') {
+          // Clear previous content
+          animationBox.innerHTML = '';
+          // Find total steps
+          let totalSteps = 0;
+          // Try to find the example in window.EXAMPLES
+          let foundExample = null;
+          for (const lang in window.EXAMPLES) {
+            for (const ex of window.EXAMPLES[lang]) {
+              if ((ex.meta && ex.meta.code === code) || ex.code === code) {
+                foundExample = ex;
+                break;
+              }
+            }
+            if (foundExample) break;
+          }
+          if (foundExample && foundExample.meta && foundExample.meta.total_steps) {
+            totalSteps = foundExample.meta.total_steps;
+          } else {
+            totalSteps = code.split("\n").map(l => l.trim()).filter(l => l !== "").length;
+          }
+          // Create a scrollable container for steps
+          const scrollContainer = document.createElement('div');
+          scrollContainer.className = 'animation-steps-scroll';
+          for (let i = 1; i <= totalSteps; i++) {
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'animation-step';
+            stepDiv.setAttribute('data-step', i);
+            scrollContainer.appendChild(stepDiv);
+          }
+          animationBox.appendChild(scrollContainer);
+          resetAnimationSteps();
+        } else {
+          animationBox.textContent = `You entered ${selectedLanguage.toUpperCase()} code.`;
+        }
+
+        // Count non-empty steps
+        const steps = code
+          .split("\n")
+          .map((l) => l.trim())
+          .filter((l) => l !== "");
+        const totalSteps = steps.length;
+
+        // Update step display
+        if (stepDisplay) {
+          stepDisplay.textContent = `1 / ${totalSteps}`;
+        }
+      }
+
+      function openFullscreenEditor() {
+        const fsEditor = document.getElementById("fullscreenEditor");
+        const input = document.getElementById("codeInput");
+        const fsText = document.getElementById("fullscreenTextarea");
+        fsText.value = input.value;
+        fsEditor.style.display = "flex";
+      }
+
+      function closeFullscreenEditor() {
+        const fsEditor = document.getElementById("fullscreenEditor");
+        const input = document.getElementById("codeInput");
+        const fsText = document.getElementById("fullscreenTextarea");
+        input.value = fsText.value;
+        fsEditor.style.display = "none";
+      }
+
+      // Code Examples Modal Logic
+      function openExamplesModal() {
+        document.getElementById("examplesModal").style.display = "flex";
+      }
+      function closeExamplesModal() {
+        document.getElementById("examplesModal").style.display = "none";
+      }
+      function showExample(lang) {
+        // Hide all examples lists
+        ["js", "py", "c", "cpp", "java"].forEach((l) => {
+          document.getElementById("example-" + l).style.display = "none";
+          document.getElementById("tab-" + l).classList.remove("active");
+        });
+        // Show selected
+        document.getElementById("example-" + lang).style.display = "block";
+        document.getElementById("tab-" + lang).classList.add("active");
+      }
+      // Attach to View button
+      document
+        .querySelector(".btn")
+        .addEventListener("click", function() {
+          openExamplesModal();
+          showExample('c');
+        });
+
+      function viewExampleCode(lang, idx) {
+        const example = window.EXAMPLES[lang][idx];
+        document.getElementById("fullCodeContent").textContent = example.meta ? example.meta.code : example.code;
+        document.getElementById("fullCodeModal").style.display = "flex";
+      }
+      function closeFullCodeModal() {
+        document.getElementById("fullCodeModal").style.display = "none";
+      }
+      let currentExecutionSteps = [];
+      let foundExample = null;
+
+      function executeExampleCode(lang, idx) {
+        const example = window.EXAMPLES[lang][idx];
+        document.getElementById("codeInput").value = example.meta ? example.meta.code : example.code;
+        currentExecutionSteps = example.execution_steps || [];
+        foundExample = example;
+        submitCode();
+        const stepDisplay = document.getElementById("stepDisplay");
+        let totalSteps = 0;
+        if (example && example.meta && example.meta.total_steps) {
+          totalSteps = example.meta.total_steps;
+        } else {
+          totalSteps = code.split("\n").map(l => l.trim()).filter(l => l !== "").length;
+        }
+        if (stepDisplay) {
+          stepDisplay.textContent = `1 / ${totalSteps}`;
+        }
+        closeExamplesModal();
+        closeFullCodeModal();
+      }
+      function executeFullCode() {
+        const code = document.getElementById("fullCodeContent").textContent;
+        document.getElementById("codeInput").value = code;
+        foundExample = null;
+        for (const lang in window.EXAMPLES) {
+          for (const ex of window.EXAMPLES[lang]) {
+            if ((ex.meta && ex.meta.code === code) || ex.code === code) {
+              foundExample = ex;
+              break;
+            }
+          }
+          if (foundExample) break;
+        }
+        currentExecutionSteps = foundExample && foundExample.execution_steps ? foundExample.execution_steps : [];
+        submitCode();
+        // Set step display using total_steps from meta if available
+        const stepDisplay = document.getElementById("stepDisplay");
+        let totalSteps = 0;
+        if (foundExample && foundExample.meta && foundExample.meta.total_steps) {
+          totalSteps = foundExample.meta.total_steps;
+        } else {
+          totalSteps = code.split("\n").map(l => l.trim()).filter(l => l !== "").length;
+        }
+        if (stepDisplay) {
+          stepDisplay.textContent = `1 / ${totalSteps}`;
+        }
+        closeExamplesModal();
+        closeFullCodeModal();
+      }
+
+      function makeModalResizable(modalContentId) {
+        const modal = document.getElementById(modalContentId);
+        const handle = modal.querySelector(".resize-handle");
+        let isResizing = false;
+        let lastX = 0,
+          lastY = 0,
+          startW = 0,
+          startH = 0;
+        handle.addEventListener("mousedown", function (e) {
+          e.preventDefault();
+          isResizing = true;
+          lastX = e.clientX;
+          lastY = e.clientY;
+          startW = modal.offsetWidth;
+          startH = modal.offsetHeight;
+          document.body.style.cursor = "nwse-resize";
+        });
+        document.addEventListener("mousemove", function (e) {
+          if (!isResizing) return;
+          let dx = e.clientX - lastX;
+          let dy = e.clientY - lastY;
+          let newW = Math.max(350, startW + dx);
+          let newH = Math.max(200, startH + dy);
+          newW = Math.min(newW, window.innerWidth - 40);
+          newH = Math.min(newH, window.innerHeight - 40);
+          modal.style.width = newW + "px";
+          modal.style.height = newH + "px";
+        });
+        document.addEventListener("mouseup", function () {
+          if (isResizing) {
+            isResizing = false;
+            document.body.style.cursor = "";
+          }
+        });
+      }
+      window.addEventListener("DOMContentLoaded", function () {
+        makeModalResizable("examplesModalContent");
+        makeModalResizable("fullCodeModalContent");
+      });
+
+      window.addEventListener("DOMContentLoaded", function() {
+        fetch('examples.json')
+          .then(res => res.json())
+          .then(data => {
+            window.EXAMPLES = data;
+            renderExampleCards();
+          });
+      });
+
+      function renderExampleCards() {
+        const langs = ["js", "py", "c", "cpp", "java"];
+        langs.forEach((lang) => {
+          const container = document.getElementById("example-" + lang);
+          if (!container) return;
+          container.innerHTML = "";
+          (window.EXAMPLES[lang] || []).forEach((example, idx) => {
+            const card = document.createElement("div");
+            card.className = "example-card";
+            const title = document.createElement("div");
+            title.className = "example-title";
+            let codeText = "";
+            if (example && example.meta) {
+              title.textContent = example.meta.title || "Untitled Example";
+              codeText = example.meta.code || "";
+            } else if (example) {
+              title.textContent = example.title || "Untitled Example";
+              codeText = example.code || "";
+            } else {
+              title.textContent = "Untitled Example";
+            }
+            const pre = document.createElement("pre");
+            pre.className = "example-code";
+            let preview = codeText.split('\n').slice(0, 3).join('\n');
+            if (codeText.split('\n').length > 3 || codeText.length > 120) {
+              let lines = codeText.split('\n');
+              let charCount = 0;
+              let previewLines = [];
+              for (let line of lines) {
+                if (charCount + line.length > 120 || previewLines.length >= 3) break;
+                previewLines.push(line);
+                charCount += line.length + 1;
+              }
+              preview = previewLines.join('\n') + '\n...';
+            }
+            pre.textContent = preview;
+            const actions = document.createElement("div");
+            actions.className = "example-actions";
+            const viewBtn = document.createElement("button");
+            viewBtn.textContent = "View";
+            viewBtn.onclick = function () {
+              viewExampleCode(lang, idx);
+            };
+            const execBtn = document.createElement("button");
+            execBtn.textContent = "Execute";
+            execBtn.onclick = function () {
+              executeExampleCode(lang, idx);
+            };
+            actions.appendChild(viewBtn);
+            actions.appendChild(execBtn);
+            card.appendChild(title);
+            card.appendChild(pre);
+            card.appendChild(actions);
+            container.appendChild(card);
+          });
+        });
+      }
+
+      let currentStep = 1;
+      let playInterval = null;
+
+      function highlightStep(step) {
+        const steps = document.querySelectorAll('.animation-step');
+        steps.forEach((div, idx) => {
+          if (div.classList.contains('revealed')) {
+            div.style.display = '';
+          } else {
+            div.style.display = 'none';
+          }
+          if (idx === step - 1) {
+            div.style.background = '#3fb950';
+            div.style.color = '#0d1117';
+            div.style.fontWeight = 'bold';
+          } else {
+            div.style.background = '#23272e';
+            div.style.color = '#c9d1d9';
+            div.style.fontWeight = 'normal';
+          }
+        });
+
+        const codeLines = document.querySelectorAll('.code-line');
+        let lineToHighlight = null;
+        if (currentExecutionSteps && currentExecutionSteps.length >= step) {
+          lineToHighlight = currentExecutionSteps[step - 1].line;
+        }
+        codeLines.forEach((line, idx) => {
+          if (lineToHighlight && idx === lineToHighlight - 1) {
+            line.classList.add('highlighted-code-line');
+          } else {
+            line.classList.remove('highlighted-code-line');
+          }
+        });
+
+        // Update stack visualizer for the current step
+        if (typeof runAnimationSteps === 'function' && currentExecutionSteps.length > 0) {
+          runAnimationSteps(currentExecutionSteps, step);
+        }
+      }
+
+      function updateStepDisplay() {
+        const stepDisplay = document.getElementById('stepDisplay');
+        const steps = document.querySelectorAll('.animation-step');
+        if (stepDisplay) {
+          stepDisplay.textContent = `${currentStep} / ${steps.length}`;
+        }
+        // Enable/disable prev/next buttons
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        if (prevBtn) prevBtn.disabled = currentStep <= 1;
+        if (nextBtn) nextBtn.disabled = currentStep >= steps.length;
+      }
+
+      function goToStep(step) {
+        const steps = document.querySelectorAll('.animation-step');
+        if (steps.length === 0) return;
+        currentStep = Math.max(1, Math.min(step, steps.length));
+        // Reveal up to the current step
+        for (let i = 0; i < currentStep; i++) {
+          steps[i].classList.add('revealed');
+        }
+        highlightStep(currentStep);
+        updateStepDisplay();
+        // Auto-scroll to center the current step
+        const scrollContainer = document.querySelector('.animation-steps-scroll');
+        const currentStepDiv = steps[currentStep - 1];
+        if (scrollContainer && currentStepDiv) {
+          const containerRect = scrollContainer.getBoundingClientRect();
+          const stepRect = currentStepDiv.getBoundingClientRect();
+          const scrollTop = scrollContainer.scrollTop;
+          // Calculate offset to center the step
+          const offset = stepRect.top - containerRect.top - (containerRect.height / 2) + (stepRect.height / 2);
+          scrollContainer.scrollTo({
+            top: scrollTop + offset,
+            behavior: 'smooth'
+          });
+        }
+        // Enable/disable prev/next buttons after step change
+        updateStepDisplay();
+      }
+
+      function repeatSteps() {
+        goToStep(1);
+      }
+
+      function prevStep() {
+        goToStep(currentStep - 1);
+      }
+
+      function nextStep() {
+        goToStep(currentStep + 1);
+      }
+
+      function playSteps() {
+        if (playInterval) {
+          clearInterval(playInterval);
+          playInterval = null;
+          document.getElementById('playBtn').textContent = '▶️ Play';
+          return;
+        }
+        document.getElementById('playBtn').textContent = '⏸️ Pause';
+        playInterval = setInterval(() => {
+          const steps = document.querySelectorAll('.animation-step');
+          if (currentStep < steps.length) {
+            goToStep(currentStep + 1);
+          } else {
+            clearInterval(playInterval);
+            playInterval = null;
+            document.getElementById('playBtn').textContent = '▶️ Play';
+          }
+        }, 1000);
+      }
+
+      document.getElementById('repeatBtn').onclick = repeatSteps;
+      document.getElementById('prevBtn').onclick = prevStep;
+      document.getElementById('playBtn').onclick = playSteps;
+      document.getElementById('nextBtn').onclick = nextStep;
+
+      function resetAnimationSteps() {
+        currentStep = 1;
+        const steps = document.querySelectorAll('.animation-step');
+        steps.forEach(div => {
+          div.classList.remove('revealed');
+          div.style.display = 'none';
+        });
+        setTimeout(() => {
+          goToStep(1);
+        }, 0);
+      }
+
+      const origCreateSteps = (selectedLanguage, code) => {
+        // This is a placeholder for the code that creates the animation steps
+      };
+   
