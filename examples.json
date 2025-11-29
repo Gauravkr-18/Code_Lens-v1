@@ -1,0 +1,636 @@
+{
+  "js": [],
+  "py": [],
+  "c": [
+    {
+      "meta": {
+        "title": "Sum of Two Numbers",
+        "total_steps": 6,
+        "code": "#include <stdio.h>\n\nint main() {\n    int a = 10;\n    int b = 20;\n    int sum = a + b;\n    printf(\"Sum of %d and %d is: %d\\n\", a, b, sum);\n    return 0;\n}",
+        "final_output": "Sum of 10 and 20 is: 30"
+      },
+      "execution_steps": [
+        {
+          "step": 1,
+          "line": 3,
+          "highlight_code": "int main() {",
+          "description": "The program starts executing. A new stack frame is created for the main function. Memory is reserved for all the variables (a, b, sum) declared inside main, although values aren't assigned yet.",
+          "stack_update": {
+            "action": "create_stack_frame",
+            "stack_data_frame": {
+              "no_of_data_frame": "create_4",
+              "data_frame_1": {
+                "name": "main()"
+              },
+              "data_frame_2": {
+                "variable_name": "a",
+                "address": "0x1000",
+                "size": "4 bytes"
+              },
+              "data_frame_3": {
+                "variable_name": "b",
+                "address": "0x1004",
+                "size": "4 bytes"
+              },
+              "data_frame_4": {
+                "variable_name": "sum",
+                "address": "0x1008",
+                "size": "4 bytes"
+              }
+            }
+          }
+        },
+        {
+          "step": 2,
+          "line": 4,
+          "highlight_code": "int a = 10;",
+          "description": "The variable 'a' is now assigned the value 10.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "a",
+            "variable_value": 10
+          }
+        },
+        {
+          "step": 3,
+          "line": 5,
+          "highlight_code": "int b = 20;",
+          "description": "The variable 'b' is assigned the value 20.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "b",
+            "variable_value": 20
+          }
+        },
+        {
+          "step": 4,
+          "line": 6,
+          "highlight_code": "int sum = a + b;",
+          "description": "The sum of 'a' and 'b' is calculated and stored in the variable 'sum'.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "sum",
+            "variable_value": 30
+          }
+        },
+        {
+          "step": 5,
+          "line": 7,
+          "highlight_code": "printf(\"Sum of %d and %d is: %d\\n\", a, b, sum);",
+          "description": "The final output is printed to the screen.",
+          "stack_update": {
+            "action": "create_tempo_stack_frame",
+            "name": "printf()"
+          },
+
+          "output_update": "Sum of 10 and 20 is: 30"
+        },
+        {
+          "step": 6,
+          "line": 8,
+          "highlight_code": "return 0;",
+          "description": "The program returns 0 and the main function ends. The stack frame is cleared.",
+          "stack_update": {
+            "action": "clear_stack"
+          }
+        }
+      ]
+    },
+    {
+      "meta": {
+        "title": "Swap Two Numbers",
+        "total_steps": 9,
+        "code": "#include <stdio.h>\n\nint main() {\n    int a = 5;\n    int b = 10;\n    int temp;\n    temp = a;\n    a = b;\n    b = temp;\n    printf(\"After swapping: a = %d, b = %d\\n\", a, b);\n    return 0;\n}",
+        "final_output": "After swapping: a = 10, b = 5"
+      },
+      "execution_steps": [
+        {
+          "step": 1,
+          "line": 3,
+          "highlight_code": "int main() {",
+          "description": "Program starts. Stack frame for main() is created. Memory reserved for a, b, temp.",
+          "stack_update": {
+            "action": "create_stack_frame",
+            "stack_data_frame": {
+              "no_of_data_frame": "create_4",
+              "data_frame_1": {
+                "name": "main()"
+              },
+              "data_frame_2": {
+                "variable_name": "a",
+                "address": "0x001",
+                "size": "4 bytes"
+              },
+              "data_frame_3": {
+                "variable_name": "b",
+                "address": "0x002",
+                "size": "4 bytes"
+              },
+              "data_frame_4": {
+                "variable_name": "temp",
+                "address": "0x003",
+                "size": "4 bytes"
+              }
+            }
+          }
+        },
+        {
+          "step": 2,
+          "line": 4,
+          "highlight_code": "int a = 5;",
+          "description": "Variable 'a' is assigned the value 5.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "a",
+            "variable_value": 5
+          }
+        },
+        {
+          "step": 3,
+          "line": 5,
+          "highlight_code": "int b = 10;",
+          "description": "Variable 'b' is assigned the value 10.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "b",
+            "variable_value": 10
+          }
+        },
+        {
+          "step": 4,
+          "line": 6,
+          "highlight_code": "int temp;",
+          "description": "Variable 'temp' is declared but not yet assigned a value.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "temp",
+            "variable_value": null
+          }
+        },
+        {
+          "step": 5,
+          "line": 7,
+          "highlight_code": "temp = a;",
+          "description": "The value of 'a' (5) is copied to 'temp'.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "temp",
+            "variable_value": 5
+          }
+        },
+        {
+          "step": 6,
+          "line": 8,
+          "highlight_code": "a = b;",
+          "description": "The value of 'b' (10) is assigned to 'a'.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "a",
+            "variable_value": 10
+          }
+        },
+        {
+          "step": 7,
+          "line": 9,
+          "highlight_code": "b = temp;",
+          "description": "The value of 'temp' (5) is assigned to 'b'.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "b",
+            "variable_value": 5
+          }
+        },
+        {
+          "step": 8,
+          "line": 10,
+          "highlight_code": "printf(...)",
+          "description": "The values of 'a' and 'b' are printed to the console.",
+          "stack_update": {
+            "action": "noop"
+          },
+          "output_update": "After swapping: a = 10, b = 5"
+        },
+        {
+          "step": 9,
+          "line": 11,
+          "highlight_code": "return 0;",
+          "description": "The program finishes. The main() stack frame is cleared.",
+          "stack_update": {
+            "action": "clear_stack"
+          }
+        }
+      ]
+    }, 
+
+
+    {
+      "meta": {
+        "title": "If-Else Condition: Compare Two Integers",
+        "total_steps": 6,
+        "code": "#include <stdio.h>\n\nint main() {\n    int a = 10;\n    int b = 20;\n    if (a < b) {\n        printf(\"a is less than b\\n\");\n    } else {\n        printf(\"a is not less than b\\n\");\n    }\n    return 0;\n}",
+        "final_output": "a is less than b"
+      },
+      "execution_steps": [
+        {
+          "step": 1,
+          "line": 3,
+          "highlight_code": "int main() {",
+          "description": "Program starts. Stack frame for main() is created. Memory reserved for 'a' and 'b'.",
+          "stack_update": {
+            "action": "create_stack_frame",
+            "stack_data_frame": {
+              "no_of_data_frame": "create_3",
+              "data_frame_1": {
+                "name": "main()"
+              },
+              "data_frame_2": {
+                "variable_name": "a",
+                "address": "0x1000",
+                "size": "4 bytes"
+              },
+              "data_frame_3": {
+                "variable_name": "b",
+                "address": "0x1004",
+                "size": "4 bytes"
+              }
+            }
+          }
+        },
+        {
+          "step": 2,
+          "line": 4,
+          "highlight_code": "int a = 10;",
+          "description": "Variable 'a' is declared and initialized with 10.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "a",
+            "variable_value": 10,
+            "address": "0x1000"
+          }
+        },
+        {
+          "step": 3,
+          "line": 5,
+          "highlight_code": "int b = 20;",
+          "description": "Variable 'b' is declared and initialized with 20.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "b",
+            "variable_value": 20,
+            "address": "0x1004"
+          }
+        },
+        {
+          "step": 4,
+          "line": 6,
+          "highlight_code": "if (a < b) {",
+          "description": "Condition 'a < b' is evaluated as true (10 < 20). Control enters the 'if' block.",
+          "stack_update": {
+            "action": "noop"
+          }
+        },
+        {
+          "step": 5,
+          "line": 7,
+          "highlight_code": "printf(\"a is less than b\\n\");",
+          "description": "The message \"a is less than b\" is printed to the console.",
+          "stack_update": {
+            "action": "noop"
+          },
+          "output_update": "a is less than b"
+        },
+        {
+          "step": 6,
+          "line": 11,
+          "highlight_code": "return 0;",
+          "description": "The program finishes and returns 0 to the operating system.",
+          "stack_update": {
+            "action": "clear_stack"
+          }
+        }
+      ]
+    },
+
+
+
+    {
+      "meta": {
+        "title": "For Loop from 0 to 2",
+        "total_steps": 14,
+        "code": "#include <stdio.h>\nint main() {\n    int i;\n    for (i = 0; i < 3; i++) {\n        printf(\"%d\\n\", i);\n    }\n    return 0;\n}",
+        "final_output": "0\n1\n2"
+      },
+      "execution_steps": [
+        {
+          "step": 1,
+          "line": 2,
+          "highlight_code": "int main() {",
+          "description": "Program starts. Stack frame for main() is created. Memory reserved for 'i'.",
+          "stack_update": {
+            "action": "create_stack_frame",
+            "stack_data_frame": {
+              "no_of_data_frame": "create_2",
+              "data_frame_1": {
+                "name": "main()"
+              },
+              "data_frame_2": {
+                "variable_name": "i",
+                "address": "0x1000",
+                "size": "4 bytes"
+              }
+            }
+          }
+        },
+        {
+          "step": 2,
+          "line": 3,
+          "highlight_code": "int i;",
+          "description": "Variable 'i' is declared. It holds an undefined (garbage) value.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "i",
+            "variable_value": "(garbage value)",
+            "address": "0x1000"
+          }
+        },
+        {
+          "step": 3,
+          "line": 4,
+          "highlight_code": "i = 0;",
+          "description": "'i' is initialized to 0 before entering the loop.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "i",
+            "variable_value": 0,
+            "address": "0x1000"
+          }
+        },
+        {
+          "step": 4,
+          "line": 4,
+          "highlight_code": "i < 3",
+          "description": "Loop condition evaluated: i = 0 < 3 is true. Entering loop body.",
+          "stack_update": {
+            "action": "noop"
+          }
+        },
+        {
+          "step": 5,
+          "line": 5,
+          "highlight_code": "printf(\"%d\\n\", i);",
+          "description": "Value of i (0) is printed.",
+          "stack_update": {
+            "action": "noop"
+          },
+          "output_update": "0"
+        },
+        {
+          "step": 6,
+          "line": 4,
+          "highlight_code": "i++",
+          "description": "Post-loop increment. 'i' becomes 1.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "i",
+            "variable_value": 1,
+            "address": "0x1000"
+          }
+        },
+        {
+          "step": 7,
+          "line": 4,
+          "highlight_code": "i < 3",
+          "description": "Loop condition evaluated: i = 1 < 3 is true. Entering loop body.",
+          "stack_update": {
+            "action": "noop"
+          }
+        },
+        {
+          "step": 8,
+          "line": 5,
+          "highlight_code": "printf(\"%d\\n\", i);",
+          "description": "Value of i (1) is printed.",
+          "stack_update": {
+            "action": "noop"
+          },
+          "output_update": "1"
+        },
+        {
+          "step": 9,
+          "line": 4,
+          "highlight_code": "i++",
+          "description": "Post-loop increment. 'i' becomes 2.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "i",
+            "variable_value": 2,
+            "address": "0x1000"
+          }
+        },
+        {
+          "step": 10,
+          "line": 4,
+          "highlight_code": "i < 3",
+          "description": "Loop condition evaluated: i = 2 < 3 is true. Entering loop body.",
+          "stack_update": {
+            "action": "noop"
+          }
+        },
+        {
+          "step": 11,
+          "line": 5,
+          "highlight_code": "printf(\"%d\\n\", i);",
+          "description": "Value of i (2) is printed.",
+          "stack_update": {
+            "action": "noop"
+          },
+          "output_update": "2"
+        },
+        {
+          "step": 12,
+          "line": 4,
+          "highlight_code": "i++",
+          "description": "Post-loop increment. 'i' becomes 3.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "i",
+            "variable_value": 3,
+            "address": "0x1000"
+          }
+        },
+        {
+          "step": 13,
+          "line": 4,
+          "highlight_code": "i < 3",
+          "description": "Loop condition evaluated: i = 3 < 3 is false. Loop exits.",
+          "stack_update": {
+            "action": "noop"
+          }
+        },
+        {
+          "step": 14,
+          "line": 7,
+          "highlight_code": "return 0;",
+          "description": "The program ends. The stack frame is cleared.",
+          "stack_update": {
+            "action": "clear_stack"
+          }
+        }
+      ]
+    },
+
+
+
+    {
+      "meta": {
+        "title": "Function Call: add(a, b)",
+        "total_steps": 11,
+        "code": "#include <stdio.h>\nint add(int a, int b) {\n    int result = a + b;\n    return result;\n}\nint main() {\n    int x = 5;\n    int y = 10;\n    int z = add(x, y);\n    printf(\"%d\\n\", z);\n    return 0;\n}",
+        "final_output": "15"
+      },
+      "execution_steps": [
+        {
+          "step": 1,
+          "line": 6,
+          "highlight_code": "int main() {",
+          "description": "Program starts. Stack frame for main() is created. Memory reserved for x, y, and z.",
+          "stack_update": {
+            "action": "create_stack_frame",
+            "stack_data_frame": {
+              "no_of_data_frame": "create_4",
+              "data_frame_1": {
+                "name": "main()"
+              },
+              "data_frame_2": {
+                "variable_name": "x",
+                "address": "0x1000",
+                "size": "4 bytes"
+              },
+              "data_frame_3": {
+                "variable_name": "y",
+                "address": "0x1004",
+                "size": "4 bytes"
+              },
+              "data_frame_4": {
+                "variable_name": "z",
+                "address": "0x1008",
+                "size": "4 bytes"
+              }
+            }
+          }
+        },
+        {
+          "step": 2,
+          "line": 7,
+          "highlight_code": "int x = 5;",
+          "description": "Variable 'x' is assigned the value 5.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "x",
+            "variable_value": 5,
+            "address": "0x1000"
+          }
+        },
+        {
+          "step": 3,
+          "line": 8,
+          "highlight_code": "int y = 10;",
+          "description": "Variable 'y' is assigned the value 10.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "y",
+            "variable_value": 10,
+            "address": "0x1004"
+          }
+        },
+        {
+          "step": 4,
+          "line": 9,
+          "highlight_code": "int z = add(x, y);",
+          "description": "Function 'add' is called with arguments x=5 and y=10. A new stack frame is created for 'add'.",
+          "stack_update": {
+            "action": "create_stack_frame",
+            "stack_data_frame": {
+              "no_of_data_frame": "create_3",
+              "data_frame_1": {
+                "name": "add(a, b)"
+              },
+              "data_frame_2": {
+                "variable_name": "a",
+                "address": "0x2000",
+                "size": "4 bytes",
+                "value": 5
+              },
+              "data_frame_3": {
+                "variable_name": "b",
+                "address": "0x2004",
+                "size": "4 bytes",
+                "value": 10
+              }
+            }
+          }
+        },
+        {
+          "step": 5,
+          "line": 2,
+          "highlight_code": "int result = a + b;",
+          "description": "Inside 'add': Variable 'result' is assigned the value of a + b = 15.",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "result",
+            "variable_value": 15,
+            "address": "0x2008"
+          }
+        },
+        {
+          "step": 6,
+          "line": 3,
+          "highlight_code": "return result;",
+          "description": "Function 'add' returns the value 15. Stack frame for 'add' is cleared.",
+          "stack_update": {
+            "action": "clear_stack"
+          },
+          "output_update": "return 15"
+        },
+        {
+          "step": 7,
+          "line": 9,
+          "highlight_code": "int z = add(x, y);",
+          "description": "Return value 15 is assigned to 'z' in main().",
+          "stack_update": {
+            "action": "update_variable",
+            "variable_name": "z",
+            "variable_value": 15,
+            "address": "0x1008"
+          }
+        },
+        {
+          "step": 8,
+          "line": 10,
+          "highlight_code": "printf(\"%d\\n\", z);",
+          "description": "The value of z (15) is printed to the console.",
+          "stack_update": {
+            "action": "noop"
+          },
+          "output_update": "15"
+        },
+        {
+          "step": 9,
+          "line": 11,
+          "highlight_code": "return 0;",
+          "description": "The program ends. Stack frame for main() is cleared.",
+          "stack_update": {
+            "action": "clear_stack"
+          }
+        }
+      ]
+    }
+    
+    
+    
+
+    
+  ],
+  "cpp": [],
+  "java": []
+}
